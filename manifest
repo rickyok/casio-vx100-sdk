@@ -1,0 +1,18 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0
+apiversion: 2
+description: My module
+author: Frederick Lasmana
+license: Specify your license
+copyright: PT Cipta Solusi Datarindo
+
+
+# these should not be edited
+name: casiosdk
+moduleid: id.web.ravintola.casiosdk
+guid: 1ad06818-429f-4604-b3a4-2a6575c1278e
+platform: android
+minsdk: 3.0.0.GA
