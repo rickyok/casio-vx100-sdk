@@ -240,7 +240,6 @@ public class CasiosdkModule extends KrollModule
 		
 	@Kroll.method
 	public void printText(String value) {
-		value = this.parseText(value);
 		LinePrinterDeviceBase linePrinterDevice = new BuildinEx840();
 		//linePrinterDevice.setCharacterSet(LinePrinterDeviceBase.CHARACTERSET_JAPAN);
 		// International character set.
@@ -253,13 +252,14 @@ public class CasiosdkModule extends KrollModule
 		linePrinter.close();
 	}
 	
-	private String parseText(String original) {
-		original.replaceAll("<NP>", (char)0x1B + "|1C");
-		original.replaceAll("<DW>", (char)0x1B + "|2C");
-		original.replaceAll("<DH>", (char)0x1B + "|3C");
-		original.replaceAll("<D[HW][WH]>", (char)0x1B + "|4C");
-		original.replaceAll("<CP>", (char)0x1B + "|P");
-		original.replaceAll("<FCP>", (char)0x1B + "|fP");
+	@Kroll.method
+	public String parseText(String original) {
+		original = original.replaceAll("<NP>", (char)0x1b + "|1C");
+		original = original.replaceAll("<DW>", (char)0x1b + "|2C");
+		original = original.replaceAll("<DH>", (char)0x1b + "|3C");
+		original = original.replaceAll("<D[HW][WH]>", (char)0x1b + "|4C");
+		original = original.replaceAll("<CP>", (char)0x1b + "|P");
+		original = original.replaceAll("<FCP>", (char)0x1b + "|fP");
 		
 		return original;
 	}
