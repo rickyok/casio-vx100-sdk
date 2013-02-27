@@ -191,22 +191,82 @@ public class CasiosdkModule extends KrollModule
 	}
 	
 	@Kroll.method
-	public void printText2(String value) {
-		LinePrinterDeviceBase linePrinterDevice = new BuildinEx840();
-		linePrinterDevice.setCharacterSet(LinePrinterDeviceBase.CHARACTERSET_JAPAN);
-								// International character set.
-		linePrinterDevice.setPageMode(LinePrinterDeviceBase.PAGEMODE_KANA);
-								// Character table.
-		linePrinterDevice.setMulticharMode(LinePrinterDeviceBase.MULTICHARMODE_SHIFTJIS);							// Kanji mode.
-		LinePrinter linePrinter = new LinePrinter();
-		linePrinter.open(linePrinterDevice);
-		linePrinter.printNormal("A\n");
-		linePrinter.printNormal("Z\n");
-		linePrinter.close();
+	public void cutPaper() {
+		String command = (char)0x1b + "|P";
+		this.printText(command);
 	}
 	
 	@Kroll.method
+	public void feedCutPaper() {
+		String command = (char)0x1b + "|fP";
+		this.printText(command);
+	}
+		
+	@Kroll.method
+	public void feedCutPaperStamp() {
+		String command = (char)0x1b + "|sP";
+		this.printText(command);
+	}
+		
+	@Kroll.method
+	public void printBitmap(int bitmapNumber) {
+		String command = (char)0x1b + "|" + bitmapNumber + "fP";
+		this.printText(command);
+	}
+		
+	@Kroll.method
+	public void printTopLogo() {
+		String command = (char)0x1b + "|tL";
+		this.printText(command);
+	}
+		
+	@Kroll.method
+	public void printBottomLogo() {
+		String command = (char)0x1b + "|bL";
+		this.printText(command);
+	}
+		
+	@Kroll.method
+	public void lineFeed(int line) {
+		String command = (char)0x1b + "|" + line + "lF";
+		this.printText(command);
+	}
+		
+	@Kroll.method
+	public void unitFeed(int line) {
+		String command = (char)0x1b + "|" + line + "uF";
+		this.printText(command);
+	}
+		
+	@Kroll.method
 	public void printText(String value) {
+		value = this.parseText(value);
+		LinePrinterDeviceBase linePrinterDevice = new BuildinEx840();
+		//linePrinterDevice.setCharacterSet(LinePrinterDeviceBase.CHARACTERSET_JAPAN);
+		// International character set.
+		//linePrinterDevice.setPageMode(LinePrinterDeviceBase.PAGEMODE_KANA);
+		// Character table.
+		//linePrinterDevice.setMulticharMode(LinePrinterDeviceBase.MULTICHARMODE_SHIFTJIS);							// Kanji mode.
+		LinePrinter linePrinter = new LinePrinter();
+		linePrinter.open(linePrinterDevice);
+		linePrinter.printNormal(value);
+		linePrinter.close();
+	}
+	
+	private String parseText(String original) {
+		original.replaceAll("<NP>", (char)0x1B + "|1C");
+		original.replaceAll("<DW>", (char)0x1B + "|2C");
+		original.replaceAll("<DH>", (char)0x1B + "|3C");
+		original.replaceAll("<D[HW][WH]>", (char)0x1B + "|4C");
+		original.replaceAll("<CP>", (char)0x1B + "|P");
+		original.replaceAll("<FCP>", (char)0x1B + "|fP");
+		
+		return original;
+	}
+	
+	@Kroll.method
+	public void printTextBuildIn(String value) {
+		// For some reason cannot make this print anything...
 		BuildinPrinter print = new BuildinPrinter();
 		int response;
 		response = print.open(DeviceCommon.DEVICE_MODE_COMMON, DeviceCommon.DEVICE_HOST_LOCALHOST);
